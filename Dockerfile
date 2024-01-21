@@ -1,9 +1,6 @@
-FROM golang:1.21.4-alpine3.18 as builder
-ARG VERSION
+FROM golang:1.21.6-alpine3.18 as builder
 
-RUN apk update && apk add gcc g++ make bash git \
-libevent-dev zlib-dev libressl-dev \
-zstd-dev zstd-static
+RUN apk add --no-cache git
 
 WORKDIR /src
 COPY . .
@@ -15,11 +12,14 @@ RUN apk update && apk add tzdata
 ENV TZ=Europe/Moscow
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ENV GOAPP_ENVIROMENMENT=local
+ENV DB_POSTGRES_USER=postgres
+ENV DB_POSTGRES_PASSWORD=qwerty1234
 
 EXPOSE 8080
+EXPOSE 5432
 
 COPY --from=builder /src/app .
 COPY configs configs
+COPY docs docs
 
 CMD ["/app"]
