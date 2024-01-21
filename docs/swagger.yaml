@@ -1,0 +1,111 @@
+basePath: /api/v1
+definitions:
+  models.CurrencyRateLast:
+    properties:
+      base:
+        example: USD
+        type: string
+      currency:
+        example: EUR
+        type: string
+      rate:
+        example: 0.91853
+        type: number
+      updateDt:
+        example: "2024-01-20 15:42:12.383064"
+        type: string
+    type: object
+  models.CurrencyRateWithDt:
+    properties:
+      base:
+        example: USD
+        type: string
+      currency:
+        example: EUR
+        type: string
+      id:
+        example: ed7f018b-dc91-4940-8d57-4f91cfe5a8bc
+        type: string
+      rate:
+        example: 0.91853
+        type: number
+      updateDt:
+        example: "2024-01-20 15:42:12.383064"
+        type: string
+    type: object
+  models.UpdateResponse:
+    properties:
+      rateId:
+        example: ed7f018b-dc91-4940-8d57-4f91cfe5a8bc
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Zamalyutdinov Ruslan
+    url: https://t.me/abc4321abc
+  description: API-service for updating currency rates
+  title: plata-currency-rates
+  version: 1.0.0
+paths:
+  /:
+    put:
+      parameters:
+      - description: currency rate
+        example: EUR/USD
+        in: query
+        name: rate
+        type: string
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/models.UpdateResponse'
+        "400":
+          description: validation error
+        "500":
+          description: service unavailable
+      summary: Send signal to update rate
+      tags:
+      - Methods
+  /by-id/{id}:
+    get:
+      parameters:
+      - description: currency rate update ID
+        example: ed7f018b-dc91-4940-8d57-4f91cfe5a8bc
+        in: path
+        name: id
+        type: string
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/models.CurrencyRateWithDt'
+        "400":
+          description: validation error
+        "500":
+          description: service unavailable
+      summary: Get currency rate by id
+      tags:
+      - Methods
+  /last:
+    get:
+      parameters:
+      - description: currency rate
+        example: EUR/USD
+        in: query
+        name: rate
+        type: string
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/models.CurrencyRateLast'
+        "400":
+          description: validation error
+        "500":
+          description: service unavailable
+      summary: Get latest currency rate
+      tags:
+      - Methods
+swagger: "2.0"
