@@ -12,14 +12,18 @@ RUN apk update && apk add tzdata
 ENV TZ=Europe/Moscow
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ENV DB_POSTGRES_USER=postgres
-ENV DB_POSTGRES_PASSWORD=qwerty1234
-
 EXPOSE 8080
-EXPOSE 5432
 
 COPY --from=builder /src/app .
 COPY configs configs
 COPY docs docs
+COPY backup.sql backup.sql
+COPY wait-for-postgres.sh wait-for-postgres.sh
+
+# install psql
+RUN apk add postgresql-client
+
+# make wait-for-postgres.sh executable
+RUN chmod +x wait-for-postgres.sh
 
 CMD ["/app"]

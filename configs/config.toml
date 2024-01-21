@@ -16,7 +16,7 @@
 
 
 [Postgres]
-    Host = "localhost"
+    Host = "db"
     Port = 5432
     Database = "plata"
     User = "DB_POSTGRES_USER"

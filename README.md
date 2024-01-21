@@ -92,9 +92,9 @@ rate is performed in the background mode.**
 
 **Query parameters**:
 
-| Parameter | Type   | Description                    | Example                              |
-|-----------|--------|--------------------------------|--------------------------------------|
-| id        | string | Currency rate update ID (UUID) | b56c42bb-c20c-4c91-bf38-b1eda1cb015e |
+| Parameter | Type   | Description                                      | Example |
+|-----------|--------|--------------------------------------------------|---------|
+| rate      | string | Currency rate in format: '{isoCode1}/{isoCode2}' | EUR/USD |
 
 **Response body:**
 
@@ -116,6 +116,19 @@ rate is performed in the background mode.**
 ***
 
 ## <a name="part2">Chapter 2: LAUNCHING THE APPLICATION</a>
+---------------------------
+
+For starting the app you just need to run:
+```bash
+make start_app
+```
+
+or you can run:
+```bash
+docker-compose up --build plata-currency-rates
+```
+
+After running these commands, the API can be accessed at localhost:8080 and the database can be accessed at localhost:5444
 
 ***
 

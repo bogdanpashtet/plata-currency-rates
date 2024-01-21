@@ -16,3 +16,6 @@ install_swagger:
 
 update_swagger:
 	swag init -g swagger_info.go --dir ./internal --parseInternal --parseDependency
+
+start_app:
+	docker-compose up --build plata-currency-rates
