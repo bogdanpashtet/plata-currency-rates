@@ -7,7 +7,7 @@ import (
 	"github.com/bogdanpashtet/plata-currency-rates/internal/infrastructure/response"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
 	"net/http"
 	"strings"
 )

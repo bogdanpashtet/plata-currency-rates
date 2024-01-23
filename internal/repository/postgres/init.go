@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
 	"github.com/rs/zerolog"
 	"time"
 )

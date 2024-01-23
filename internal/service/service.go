@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/bogdanpashtet/plata-currency-rates/internal/models"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
 )
 
 func (svc *service) GetRateFromProvider(ctx context.Context, toIso, fromIso string) (models.UpdateResponse, error) {

@@ -40,10 +40,10 @@ CREATE TYPE plata_currency_rates.rate AS (
 ALTER TYPE plata_currency_rates.rate OWNER TO postgres;
 
 --
--- Name: add_to_queue(uuid, character, character, real); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
+-- Name: add_to_queue(uuid, character, character, numeric); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
 --
 
-CREATE FUNCTION plata_currency_rates.add_to_queue(_id uuid, _currency character, _base character, _rate real) RETURNS void
+CREATE FUNCTION plata_currency_rates.add_to_queue(_id uuid, _currency character, _base character, _rate numeric) RETURNS void
     LANGUAGE plpgsql
     AS $$
 
@@ -58,13 +58,13 @@ END;
 $$;
 
 
-ALTER FUNCTION plata_currency_rates.add_to_queue(_id uuid, _currency character, _base character, _rate real) OWNER TO postgres;
+ALTER FUNCTION plata_currency_rates.add_to_queue(_id uuid, _currency character, _base character, _rate numeric) OWNER TO postgres;
 
 --
--- Name: add_to_rates(uuid, character, character, real); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
+-- Name: add_to_rates(uuid, character, character, numeric); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
 --
 
-CREATE FUNCTION plata_currency_rates.add_to_rates(_id uuid, _currency character, _base character, _rate real) RETURNS TABLE(id uuid, currency character, base character, rate real, date timestamp without time zone)
+CREATE FUNCTION plata_currency_rates.add_to_rates(_id uuid, _currency character, _base character, _rate numeric) RETURNS TABLE(id uuid, currency character, base character, rate numeric, date timestamp without time zone)
     LANGUAGE plpgsql
     AS $$
 
@@ -89,13 +89,13 @@ END;
 $$;
 
 
-ALTER FUNCTION plata_currency_rates.add_to_rates(_id uuid, _currency character, _base character, _rate real) OWNER TO postgres;
+ALTER FUNCTION plata_currency_rates.add_to_rates(_id uuid, _currency character, _base character, _rate numeric) OWNER TO postgres;
 
 --
 -- Name: confirm_queue(); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
 --
 
-CREATE FUNCTION plata_currency_rates.confirm_queue() RETURNS TABLE(ret_id uuid, ret_currency character, ret_base character, ret_rate real)
+CREATE FUNCTION plata_currency_rates.confirm_queue() RETURNS TABLE(ret_id uuid, ret_currency character, ret_base character, ret_rate numeric)
     LANGUAGE plpgsql
     AS $$
 
@@ -136,7 +136,7 @@ ALTER FUNCTION plata_currency_rates.confirm_queue() OWNER TO postgres;
 -- Name: get_by_id(uuid); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
 --
 
-CREATE FUNCTION plata_currency_rates.get_by_id(_id uuid) RETURNS TABLE(ret_id uuid, ret_currency character, ret_base character, ret_rate real, ret_date timestamp without time zone)
+CREATE FUNCTION plata_currency_rates.get_by_id(_id uuid) RETURNS TABLE(ret_id uuid, ret_currency character, ret_base character, ret_rate numeric, ret_date timestamp without time zone)
     LANGUAGE plpgsql
     AS $$
 
@@ -159,7 +159,7 @@ ALTER FUNCTION plata_currency_rates.get_by_id(_id uuid) OWNER TO postgres;
 -- Name: get_last_rate(character, character); Type: FUNCTION; Schema: plata_currency_rates; Owner: postgres
 --
 
-CREATE FUNCTION plata_currency_rates.get_last_rate(_currency character, _base character) RETURNS TABLE(ret_currency character, ret_base character, ret_rate real, ret_date timestamp without time zone)
+CREATE FUNCTION plata_currency_rates.get_last_rate(_currency character, _base character) RETURNS TABLE(ret_currency character, ret_base character, ret_rate numeric, ret_date timestamp without time zone)
     LANGUAGE plpgsql
     AS $$
 
@@ -178,6 +178,37 @@ $$;
 
 ALTER FUNCTION plata_currency_rates.get_last_rate(_currency character, _base character) OWNER TO postgres;
 
+--
+-- Name: add_to_rates(uuid, character, character, real); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.add_to_rates(_id uuid, _currency character, _base character, _rate real) RETURNS TABLE(id uuid, currency character, base character, rate numeric, date timestamp without time zone)
+    LANGUAGE plpgsql
+    AS $$
+
+DECLARE
+
+    inserted_row plata_currency_rates.rates%ROWTYPE;
+
+BEGIN
+
+    INSERT INTO plata_currency_rates.rates(id, currency, base, rate, date)
+
+    VALUES (_id, _currency, _base, _rate, current_timestamp)
+
+    RETURNING * INTO inserted_row;
+
+
+
+    RETURN QUERY SELECT inserted_row.*;
+
+END;
+
+$$;
+
+
+ALTER FUNCTION public.add_to_rates(_id uuid, _currency character, _base character, _rate real) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -190,7 +221,7 @@ CREATE TABLE plata_currency_rates.rates (
     id uuid NOT NULL,
     currency character(3) NOT NULL,
     base character(3) NOT NULL,
-    rate real NOT NULL,
+    rate numeric NOT NULL,
     date timestamp without time zone NOT NULL
 );
 
@@ -205,7 +236,7 @@ CREATE TABLE plata_currency_rates.rates_queue (
     id uuid NOT NULL,
     currency character(3) NOT NULL,
     base character(3) NOT NULL,
-    rate real NOT NULL,
+    rate numeric NOT NULL,
     date timestamp without time zone NOT NULL
 );
 
@@ -248,6 +279,9 @@ a432c2d0-8a8c-4e58-83f0-3dd93d83ddf2	EUR	JPY	0.0062	2024-01-20 21:30:44.0094
 4d68d255-3d57-4328-ab8b-44309de3ccb2	MXN	USD	17.13	2024-01-21 04:34:23.002119
 1b7c7b42-a2f6-4edb-93c2-cffa2ef4cbcf	EUR	JPY	0.0062	2024-01-21 14:07:22.015196
 4910c3d3-b785-4bec-9b4b-91639fa63ef9	EUR	MXN	0.05362	2024-01-21 14:49:52.006875
+f37324a3-b7c3-4845-8115-3517b276d154	MXN	EUR	18.5897	2024-01-23 14:02:07.011773
+e91b64c6-bf46-4858-b7f9-eb707fbaa015	MXN	EUR	18.5897	2024-01-23 14:02:22.009796
+a9f16f38-a22f-42c3-a215-4061d831a098	MXN	EUR	18.58970069885254	2024-01-23 14:02:37.015888
 \.
 
 

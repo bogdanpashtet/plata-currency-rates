@@ -2,8 +2,9 @@ package bootstrap
 
 import (
 	"context"
+	"fmt"
 	"github.com/bogdanpashtet/plata-currency-rates/internal/models/config"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
 	"github.com/rs/zerolog"
 	"os"
 )
@@ -19,15 +20,13 @@ func DbConnInit(cfg config.Postgres, logger zerolog.Logger) *pgx.Conn {
 		logger.Fatal().Msg("set env variable for database password")
 	}
 
-	pgConfig := pgx.ConnConfig{
-		Host:     cfg.Host,
-		Port:     uint16(cfg.Port),
-		Database: cfg.Database,
-		User:     user,
-		Password: password,
+	connStr := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", user, password, cfg.Host, cfg.Port, cfg.Database)
+	pgConnConfig, err := pgx.ParseConfig(connStr)
+	if err != nil {
+		logger.Fatal().Msg(err.Error())
 	}
 
-	conn, err := pgx.Connect(pgConfig)
+	conn, err := pgx.ConnectConfig(context.Background(), pgConnConfig)
 	if err != nil {
 		logger.Fatal().Msg(err.Error())
 		return nil
