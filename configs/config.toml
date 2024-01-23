@@ -14,7 +14,6 @@
         Path = "/currencies"
         Method = "GET"
 
-
 [Postgres]
     Host = "db"
     Port = 5432

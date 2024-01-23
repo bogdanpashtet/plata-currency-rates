@@ -16,9 +16,11 @@ var (
 	logger = bootstrap.InitLogger()
 	cfg    = bootstrap.InitConfig(logger)
 
+	dbConn = bootstrap.DbConnInit(cfg.Postgres, logger)
+
 	frankfurterPrv = frankfurter.NewProvider(&cfg.FrankfurterClient, logger)
 	validIsoCodes  = bootstrap.GetValidIsoCodes(frankfurterPrv, logger)
-	db             = postgres.New(cfg.Postgres, logger)
+	db             = postgres.New(dbConn, logger)
 
 	svc = service.New(frankfurterPrv, db, logger)
 	ctr = controller.New(svc, validIsoCodes, logger)
